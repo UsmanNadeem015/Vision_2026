@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html class="dark" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -129,143 +128,6 @@
       };
     </script>
 
-    <link rel="stylesheet" href="./styles.css">
-
-    <!-- Custom JS -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const searchBtn = document.getElementById("searchBtn");
-        const searchInput = document.getElementById("searchInput");
-        const resultsContainer = document.getElementById("resultsContainer");
-
-        // Sample dishes click handler
-        document.querySelectorAll(".cursor-pointer").forEach((tag) => {
-          tag.addEventListener("click", function () {
-            searchInput.value = this.textContent.trim();
-            performSearch();
-          });
-        });
-
-        // Enter key handler
-        searchInput.addEventListener("keypress", function (e) {
-          if (e.key === "Enter") {
-            performSearch();
-          }
-        });
-
-        async function performSearch() {
-          const dish = searchInput.value.trim();
-          if (!dish) {
-            showError("Please enter a dish name");
-            return;
-          }
-
-          // Show loading state
-          resultsContainer.innerHTML = `
-            <div class="col-span-full flex flex-col items-center justify-center py-12">
-                <div class="loading loading-spinner loading-lg text-primary mb-4"></div>
-                <p class="text-on-surface-variant">Finding the best ${dish} near you...</p>
-            </div>
-        `;
-
-          try {
-            const response = await fetch(
-              `api.php?dish=${encodeURIComponent(dish)}`,
-            );
-
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-
-            if (data.error) {
-              showError(data.error);
-              return;
-            }
-
-            if (!Array.isArray(data) || data.length === 0) {
-              showError("No restaurants found for this dish");
-              return;
-            }
-
-            displayResults(data);
-          } catch (err) {
-            console.error("Error:", err);
-            showError("Something went wrong. Please try again later.");
-          }
-        }
-
-        function displayResults(places) {
-          resultsContainer.innerHTML = "";
-
-          places.forEach((place) => {
-            const stars = Array.from({ length: 5 }, (_, i) =>
-              i < Math.round(place.rating) ? "★" : "☆",
-            ).join("");
-
-            const card = document.createElement("div");
-            card.className =
-              "glass-card p-6 rounded-xl hover:scale-[1.02] transition-all duration-300";
-            card.innerHTML = `
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-xl font-bold text-white">${escapeHtml(place.name)}</h3>
-                    <div class="flex items-center gap-1 bg-surface-container px-3 py-1 rounded-full">
-                        <span class="text-yellow-400 font-semibold">${place.rating}</span>
-                        <span class="text-yellow-400 text-sm">★</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="text-green-400 font-semibold">${place.price}</span>
-                    <span class="text-outline-variant">•</span>
-                    <span class="text-outline text-sm">${place.total_ratings} reviews</span>
-                </div>
-                <p class="text-sm text-on-surface-variant mb-3 flex items-start gap-2">
-                    <span class="material-symbols-outlined text-sm mt-0.5">location_on</span>
-                    ${escapeHtml(place.address)}
-                </p>
-                <div class="bg-primary-container/20 rounded-lg p-3 mb-4">
-                    <p class="text-sm italic flex items-start gap-2">
-                        <span class="material-symbols-outlined text-purple-400 text-sm">psychology</span>
-                        ${escapeHtml(place.ai)}
-                    </p>
-                </div>
-                <div class="flex gap-2">
-                    <a href="${place.map}" 
-                       target="_blank" 
-                       class="flex-1 btn bg-primary/20 hover:bg-primary/30 text-primary border-none gap-2">
-                        <span class="material-symbols-outlined">map</span>
-                        View on Map
-                    </a>
-                </div>
-            `;
-
-            resultsContainer.appendChild(card);
-          });
-        }
-
-        function showError(message) {
-          resultsContainer.innerHTML = `
-            <div class="col-span-full flex flex-col items-center justify-center py-12">
-                <span class="material-symbols-outlined text-6xl text-outline mb-4">restaurant</span>
-                <p class="text-lg text-on-surface-variant mb-2">${escapeHtml(message)}</p>
-                <p class="text-sm text-outline">Try searching for a different dish</p>
-            </div>
-        `;
-        }
-
-        function escapeHtml(text) {
-          const div = document.createElement("div");
-          div.textContent = text;
-          return div.innerHTML;
-        }
-
-        // Make searchBtn work
-        searchBtn.addEventListener("click", performSearch);
-      });
-    </script>
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="./styles.css" />
   </head>
 
@@ -295,6 +157,7 @@
         <div class="flex items-center gap-4"></div>
       </div>
     </nav>
+    
     <main class="pt-24 min-h-screen">
       <!-- Hero Section -->
       <section class="relative px-6 py-16 md:py-32 overflow-hidden">
@@ -344,25 +207,26 @@
             </div>
             <div class="flex flex-wrap justify-center gap-3 mt-6">
               <span
-                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors"
-                >Sushi</span
+                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors dish-tag"
+                >Pizza</span
               >
               <span
-                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors"
-                >Truffle Pasta</span
+                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors dish-tag"
+                >Zinger</span
               >
               <span
-                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors"
-                >Street Tacos</span
+                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors dish-tag"
+                >Broast</span
               >
               <span
-                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors"
-                >Vegan Bowls</span
+                class="px-3 py-1 rounded-full bg-surface-container-highest text-label-sm font-label-sm border border-white/5 cursor-pointer hover:bg-primary-container/20 hover:border-primary/30 transition-colors dish-tag"
+                >Pasta</span
               >
             </div>
           </div>
         </div>
       </section>
+      
       <!-- Results Grid -->
       <section class="max-w-7xl mx-auto px-6 py-12">
         <div class="flex items-center justify-between mb-10">
@@ -389,9 +253,17 @@
         <div
           id="resultsContainer"
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        ></div>
+        >
+          <!-- Initial placeholder -->
+          <div class="col-span-full flex flex-col items-center justify-center py-12">
+            <span class="material-symbols-outlined text-6xl text-outline mb-4">restaurant_menu</span>
+            <p class="text-lg text-on-surface-variant mb-2">Search for a dish to get started</p>
+            <p class="text-sm text-outline">Discover the best restaurants near you</p>
+          </div>
+        </div>
       </section>
     </main>
+    
     <!-- Footer -->
     <footer
       class="bg-slate-950/80 backdrop-blur-md border-t border-white/5 w-full py-12"
@@ -416,6 +288,7 @@
         </div>
       </div>
     </footer>
+    
     <!-- FAB -->
     <button
       class="fixed bottom-8 right-8 w-16 h-16 rounded-full brand-gradient shadow-xl shadow-purple-500/20 flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all z-40"
@@ -427,5 +300,195 @@
         >auto_awesome</span
       >
     </button>
+
+    <!-- Complete JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchBtn = document.getElementById("searchBtn");
+        const searchInput = document.getElementById("searchInput");
+        const resultsContainer = document.getElementById("resultsContainer");
+
+        // Sample dish tags
+        document.querySelectorAll(".dish-tag").forEach((tag) => {
+          tag.addEventListener("click", function () {
+            searchInput.value = this.textContent.trim();
+            performSearch();
+          });
+        });
+
+        // Enter key support
+        searchInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") performSearch();
+        });
+
+async function performSearch() {
+  const dish = searchInput.value.trim();
+
+  if (!dish) {
+    showError("Enter a dish");
+    return;
+  }
+
+  // Show loading state with dish name
+  resultsContainer.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-16">
+      <div class="loading loading-spinner loading-lg text-primary mb-6"></div>
+      <p class="text-lg text-on-surface-variant mb-2">Finding the best ${escapeHtml(dish)} in Karachi...</p>
+      <p class="text-sm text-outline">Asking AI for real restaurant recommendations</p>
+    </div>
+  `;
+
+  try {
+    const res = await fetch(`api.php?dish=${encodeURIComponent(dish)}`);
+    const data = await res.json();
+
+    if (data.error) {
+      showError(data.error);
+      return;
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
+      showError("No results found");
+      return;
+    }
+
+    displayResults(data);
+
+  } catch (err) {
+    console.error(err);
+    showError("Connection error. Please try again.");
+  }
+}
+
+function displayResults(places) {
+  resultsContainer.innerHTML = "";
+
+  places.forEach((place, index) => {
+    const card = document.createElement("div");
+
+    card.className =
+      "glass-card p-6 rounded-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer";
+    card.style.animationDelay = `${index * 100}ms`;
+
+    // Generate a random gradient for each card
+    const gradients = [
+      'from-purple-500/10 to-pink-500/10',
+      'from-blue-500/10 to-cyan-500/10',
+      'from-emerald-500/10 to-teal-500/10',
+      'from-orange-500/10 to-red-500/10',
+      'from-indigo-500/10 to-purple-500/10'
+    ];
+    const gradient = gradients[index % gradients.length];
+
+    card.innerHTML = `
+      <div class="absolute inset-0 bg-gradient-to-br ${gradient} rounded-xl opacity-50"></div>
+      <div class="relative z-10">
+        <div class="flex items-start justify-between mb-3">
+          <h3 class="text-xl font-bold text-white">
+            ${escapeHtml(place.name)}
+          </h3>
+          <span class="badge badge-sm bg-primary/20 text-primary border-none">#${index + 1}</span>
+        </div>
+
+        <p class="text-sm text-on-surface-variant mb-4 flex items-start gap-2">
+          <span class="material-symbols-outlined text-sm mt-0.5 text-primary">location_on</span>
+          ${escapeHtml(place.address)}
+        </p>
+
+        <div class="ai-reason-box bg-surface-container-low rounded-lg p-4 mb-4 border border-white/5">
+          <p class="text-sm flex items-start gap-2">
+            <span class="material-symbols-outlined text-primary text-sm">psychology</span>
+            <span class="text-on-surface-variant">${escapeHtml(place.ai)}</span>
+          </p>
+        </div>
+
+        <a href="${place.map}" 
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn w-full bg-primary/20 hover:bg-primary/30 text-primary border-none gap-2 hover:scale-105 transition-transform">
+          <span class="material-symbols-outlined">map</span>
+          View on Google Maps
+        </a>
+      </div>
+    `;
+
+    resultsContainer.appendChild(card);
+  });
+}
+
+function showError(message) {
+  resultsContainer.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-16">
+      <span class="material-symbols-outlined text-6xl text-outline mb-4">restaurant</span>
+      <p class="text-lg text-on-surface-variant mb-2">${escapeHtml(message)}</p>
+      <p class="text-sm text-outline">Try searching for a different dish like Biryani, Pizza, or Burger</p>
+    </div>
+  `;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+        function displayResults(places) {
+          resultsContainer.innerHTML = "";
+
+          places.forEach((place) => {
+            const card = document.createElement("div");
+
+            card.className =
+              "glass-card p-6 rounded-xl hover:scale-[1.02] transition-all duration-300";
+
+            card.innerHTML = `
+              <h3 class="text-xl font-bold text-white mb-2">
+                ${escapeHtml(place.name)}
+              </h3>
+
+              <p class="text-sm text-on-surface-variant mb-3 flex items-start gap-2">
+                <span class="material-symbols-outlined text-sm mt-0.5">location_on</span>
+                ${escapeHtml(place.address)}
+              </p>
+
+              <div class="ai-reason-box mb-4">
+                <p class="text-sm italic flex items-start gap-2">
+                  <span class="material-symbols-outlined text-purple-400 text-sm">psychology</span>
+                  ${escapeHtml(place.ai)}
+                </p>
+              </div>
+
+              <a href="${place.map}" 
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="btn w-full bg-primary/20 hover:bg-primary/30 text-primary border-none gap-2">
+                <span class="material-symbols-outlined">map</span>
+                View on Map
+              </a>
+            `;
+
+            resultsContainer.appendChild(card);
+          });
+        }
+
+        function showError(message) {
+          resultsContainer.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center py-12">
+              <span class="material-symbols-outlined text-6xl text-outline mb-4">restaurant</span>
+              <p class="text-lg text-on-surface-variant mb-2">${escapeHtml(message)}</p>
+              <p class="text-sm text-outline">Try searching for a different dish</p>
+            </div>
+          `;
+        }
+
+        function escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        searchBtn.addEventListener("click", performSearch);
+      });
+    </script>
   </body>
 </html>
